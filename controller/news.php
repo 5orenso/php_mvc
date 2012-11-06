@@ -1,6 +1,5 @@
-<?php
+<?php namespace CMS;
 
-namespace CMS;
 /**
  * This file handles the retrieval and serving of news articles
  */
