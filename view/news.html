@@ -1,0 +1,15 @@
+<html>
+<head></head>
+	<body>
+		<h1>Welcome to Our Website!</h1>
+		<hr/>
+		<h2>News</h2>
+		<h4>{{article.title}}</h4>
+		<p>{{article.content}}</p>
+		<form method="post" action="/project/test/mvc/index.php?news">
+			<input type="text" name="author" value="John Squibb">
+			<input type="submit" value="Show author">
+		</form>
+	</body>
+</html>
+
