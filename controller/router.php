@@ -1,6 +1,6 @@
 <?php
 
-use CMS;
+namespace CMS;
 
 /**
  * This controller routes all incoming requests to the appropriate controller
