@@ -1,7 +1,6 @@
 <?php
 
-namespace CMS\News;
-
+//namespace CMS\News;
 
 /**
  * This controller routes all incoming requests to the appropriate controller
@@ -74,11 +73,11 @@ if (file_exists($target)) {
 		$controller = new $class;
 	} else {
 		//did we name our class correctly?
-		die('class does not exist!');
+		die($class.' : class does not exist!');
 	}
 } else {
 	//can't find the file in 'controllers'! 
-	die('page does not exist!');
+	die($target.' : page does not exist!');
 }
 
 //once we have the controller instantiated, execute the default function
