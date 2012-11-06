@@ -1,6 +1,6 @@
 <?php
 
-//namespace CMS\News;
+namespace CMS;
 
 /**
  * This controller routes all incoming requests to the appropriate controller
