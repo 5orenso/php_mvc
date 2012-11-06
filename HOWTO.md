@@ -1,6 +1,15 @@
+Packages
+--------
+Composer:
+https://packagist.org/
+Pear:
+apt-get
+
+
 Naming convention
 -----------------
 http://perldoc.perl.org/perlstyle.html
+
 
 Document style
 --------------
