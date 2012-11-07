@@ -1,6 +1,6 @@
 <?php
 
-namespace CMS;
+//namespace CMS;
 /**
  * The News Model does the back-end heavy lifting for the News Controller
  */
@@ -13,7 +13,7 @@ class News_Model {
 	public function __construct () {
 		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'\\' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'('.$className.')'.' #'.__LINE__."<br>";
+		     .__FUNCTION__.'()'.' #'.__LINE__."<br>";
 		$this->db = new MysqlImproved_Driver;
 	}
 	public function __destruct () {

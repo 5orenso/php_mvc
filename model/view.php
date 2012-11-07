@@ -19,7 +19,7 @@ class View_Model {
 	public function __construct ($template) {
 		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'('.$className.')'.' #'.__LINE__."<br>";
+		     .__FUNCTION__.'('.$template.')'.' #'.__LINE__."<br>";
 
 		//compose file name
 		$file = SERVER_ROOT . '/view/' . strtolower($template);
@@ -62,6 +62,7 @@ class View_Model {
 	 * output returned rather than displayed directly.
 	 */
 	public function render ($direct_output = TRUE) {
+		// Use Twig as template engine.
 		require_once '/var/www/lib/Twig/lib/Twig/Autoloader.php';
 		Twig_Autoloader::register();
 		$loader = new Twig_Loader_Filesystem(SERVER_ROOT.'/view');
@@ -75,7 +76,7 @@ class View_Model {
 			ob_start();
 		}
 	
-		// Get template
+		// Render template with Twig engine.
 		// echo $this->data['article']['title'];
 		echo $twig->render($this->render, $this->data);
 		

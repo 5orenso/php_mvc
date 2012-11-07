@@ -7,7 +7,7 @@ class MysqlImproved_Driver extends Database_Lib {
 	public function __construct () {
 		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'('.$className.')'.' #'.__LINE__."<br>";
+		     .__FUNCTION__.'()'.' #'.__LINE__."<br>";
 	}
 
 	public function __destruct () {
