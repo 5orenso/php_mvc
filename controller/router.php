@@ -1,14 +1,17 @@
 <?php
 
+include_once(SERVER_ROOT.'/lib/tools.php');
 
 /**
  * This controller routes all incoming requests to the appropriate controller
  */
 //Automatically includes files containing classes that are called
 function __autoload ($className) {
-	echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
+	Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		 .__FUNCTION__.'('.$className.')'.' #'.__LINE__."<br>";
+		 .' [ob_level='.ob_get_level().'] '
+		 .__FUNCTION__.'('.$className.')'.' #'.__LINE__);
+
 	//parse out filename where class should be located
 	list($filename , $suffix) = split('_' , $className);
 	
@@ -57,7 +60,15 @@ foreach ($parsed as $argument) {
 }
 $getVars = $_REQUEST; #$_POST ? $_POST : $_GET;
 
-//compute the path to the file
+
+
+// Parse with sections
+$opt = Tools::parse_ini_file_ext(SERVER_ROOT."/config/main.ini", true);
+Tools::log(__FILE__.' : ');
+Tools::dumper($opt);
+
+
+// compute the path to the file
 $target = SERVER_ROOT . '/controller/' . $page . '.php';
 
 //get target
@@ -69,7 +80,7 @@ if (file_exists($target)) {
 	
 	//instantiate the appropriate class
 	if (class_exists($class)) {
-		$controller = new $class;
+		$controller = new $class($opt);
 	} else {
 		//did we name our class correctly?
 		die($class.' : class does not exist!');

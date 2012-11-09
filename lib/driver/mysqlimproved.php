@@ -4,10 +4,15 @@
  * interaction with a MySQL database
  */
 class MysqlImproved_Driver extends Database_Lib {
-	public function __construct () {
-		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
+
+	public $opt;
+
+	public function __construct ($opt) {
+		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'()'.' #'.__LINE__."<br>";
+		     .' [ob_level='.ob_get_level().'] '
+		     .__FUNCTION__.'()'.' #'.__LINE__);
+		$this->opt = $opt;
 	}
 
 	public function __destruct () {
@@ -32,18 +37,18 @@ class MysqlImproved_Driver extends Database_Lib {
 	 * Create new connection to database
 	 */ 
 	public function connect () {
-		//connection parameters
-		$host = 'localhost';
-		$user = 'root';
-		$password = 'dil9bert';
-		$database = 'my_test';
-	
-		//your implementation may require these...
-		$port = NULL;
-		$socket = NULL;	
+		$this->log(__FILE__.' : ');
+		$this->dumper($this->opt);
 		
 		//create new mysqli connection
-		$this->connection = new mysqli($host, $user, $password, $database, $port, $socket);
+		$this->connection = new mysqli(
+		                               $this->coalesce($this->opt, 'host', NULL),
+		                               $this->coalesce($this->opt, 'user', NULL),
+		                               $this->coalesce($this->opt, 'pwd', NULL),
+		                               $this->coalesce($this->opt, 'db', NULL),
+		                               $this->coalesce($this->opt, 'port', NULL),
+		                               $this->coalesce($this->opt, 'socket', NULL)
+		                              );
 		
 		return TRUE;
 	}

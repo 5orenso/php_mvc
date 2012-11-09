@@ -1,5 +1,5 @@
 <?php
-
+include_once(SERVER_ROOT.'/lib/tools.php');
 //namespace CMS;
 /**
  * The News Model does the back-end heavy lifting for the News Controller
@@ -10,11 +10,18 @@ class News_Model {
 	 */
 	private $db;
 		
-	public function __construct () {
-		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'\\' : '')
+	public function __construct ($opt) {
+		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'\\' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'()'.' #'.__LINE__."<br>";
-		$this->db = new MysqlImproved_Driver;
+		     .' [ob_level='.ob_get_level().'] '
+		     .__FUNCTION__.'()'.' #'.__LINE__);
+		
+		if ($opt['database']['driver'] == 'mysql') {
+			$this->db = new MysqlImproved_Driver($opt['mysql']);
+		} elseif ($opt['database']['driver'] == 'mysql') {
+			// $this->db = new MysqlImproved_Driver($opt['mysql']);
+
+		}
 	}
 	public function __destruct () {
 

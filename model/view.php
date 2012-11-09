@@ -1,8 +1,9 @@
 <?php
+include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * Handles the view functionality of our MVC framework
  */
-class View_Model {
+class View_Model extends Tools {
 	/**
 	 * Holds variables assigned to template
 	 */
@@ -17,9 +18,10 @@ class View_Model {
 	 * Accept a template to load
 	 */
 	public function __construct ($template) {
-		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
+		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'('.$template.')'.' #'.__LINE__."<br>";
+		     .' [ob_level='.ob_get_level().'] '
+		     .__FUNCTION__.'('.$template.')'.' #'.__LINE__);
 
 		//compose file name
 		$file = SERVER_ROOT . '/view/' . strtolower($template);

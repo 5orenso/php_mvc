@@ -1,13 +1,20 @@
 <?php 
 //namespace CMS;
+include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * This file handles the retrieval and serving of news articles
  */
-class News_Controller {
-	public function __construct () {
-		echo __FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
+class News_Controller extends Tools {
+
+	public $opt;
+
+	public function __construct ($opt) {
+		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .__FUNCTION__.'()'.' #'.__LINE__."<br>";
+		     .' [ob_level='.ob_get_level().'] '
+		     .__FUNCTION__.'()'.' #'.__LINE__);
+
+		$this->opt = $opt;
 	}
 
 	public function __destruct () {
@@ -26,7 +33,7 @@ class News_Controller {
 	 * @param array $getVars the GET variables posted to index.php
 	 */
 	public function main(array $getVars) {
-		$newsModel = new News_Model;
+		$newsModel = new News_Model($this->opt);
 		
 		// get an article
 		$article = $newsModel->get_article($getVars['author']);
