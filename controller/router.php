@@ -1,11 +1,11 @@
 <?php
-
 include_once(SERVER_ROOT.'/lib/tools.php');
 
 /**
  * This controller routes all incoming requests to the appropriate controller
  */
-//Automatically includes files containing classes that are called
+
+// Automatically includes files containing classes that are called
 function __autoload ($className) {
 	Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
@@ -15,7 +15,7 @@ function __autoload ($className) {
 	//parse out filename where class should be located
 	list($filename , $suffix) = split('_' , $className);
 	
-	//select the folder where class should be located based on suffix
+	// select the folder where class should be located based on suffix
 	switch (strtolower($suffix)) {	
 		case 'model':
 			$folder = '/model/';
@@ -25,6 +25,9 @@ function __autoload ($className) {
 			break;
 		case 'driver':
 			$folder = '/lib/driver/';
+			break;
+		default:
+			$folder = '/lib/';
 			break;
 	}
 

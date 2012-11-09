@@ -3,7 +3,7 @@
  * The MySQL Improved driver extends the Database_Library to provide 
  * interaction with a MySQL database
  */
-class MysqlImproved_Driver extends Database {
+class Postgresql_Driver extends Database {
 	/* 
 	 * Holds the input opt when __construct had been called.
 	 */
@@ -42,15 +42,14 @@ class MysqlImproved_Driver extends Database {
 		$this->log(__FILE__.' : ');
 		$this->dumper($this->opt);
 		
-		//create new mysqli connection
-		$this->connection = new mysqli(
-		                               $this->coalesce($this->opt, 'host', NULL),
-		                               $this->coalesce($this->opt, 'user', NULL),
-		                               $this->coalesce($this->opt, 'pwd', NULL),
-		                               $this->coalesce($this->opt, 'db', NULL),
-		                               $this->coalesce($this->opt, 'port', NULL),
-		                               $this->coalesce($this->opt, 'socket', NULL)
-		                              );
+		//create new postgresql connection
+		$this->connection = pg_connect(
+		                  				'host='    .$this->coalesce($this->opt, 'host', NULL).' '.
+		                  				'dbname='  .$this->coalesce($this->opt, 'db',   NULL).' '.
+		                  				'user='    .$this->coalesce($this->opt, 'user', NULL).' '.
+		                  				'password='.$this->coalesce($this->opt, 'pwd',  NULL).' '.
+		                  				'port='    .$this->coalesce($this->opt, 'port',  NULL).' '
+		                  			  ) or die ("Could not connect to server\n");
 		
 		return TRUE;
 	}
@@ -60,8 +59,7 @@ class MysqlImproved_Driver extends Database {
 	 */
 	public function disconnect () {
 		//clean up connection!
-		$this->connection->close();	
-		
+		pg_close($this->connection);
 		return TRUE;
 	}
 	
@@ -82,7 +80,7 @@ class MysqlImproved_Driver extends Database {
 	 * @param $data
 	 */
 	public function escape ($data) {
-		return $this->connection->real_escape_string($data);
+		return pg_escape_string($data);
 	}
 	
 	/**
@@ -91,11 +89,9 @@ class MysqlImproved_Driver extends Database {
 	public function query () {
 		if (isset($this->query)) {
 			//execute prepared query and store in result variable
-			$this->result = $this->connection->query($this->query);
-		
+			$this->result = pg_query($this->connection, $this->query) or die("Cannot execute query: $query\n");		
 			return TRUE;
-		}
-		
+		}		
 		return FALSE;		
 	}
 	
@@ -109,7 +105,7 @@ class MysqlImproved_Driver extends Database {
 			switch ($type) {
 				case 'array':
 					//fetch a row as array
-					$row = $this->result->fetch_array();				
+					$row = pg_fetch_assoc($this->result);
 					break;
 				
 				case 'object':				
@@ -117,7 +113,7 @@ class MysqlImproved_Driver extends Database {
 				
 				default:				
 					//fetch a row as object
-					$row = $this->result->fetch_object();	
+					$row = pg_fetch_object($this->result);
 					break;
 			}
 			

@@ -9,6 +9,16 @@
 			<input type="text" name="author" value="John Squibb">
 			<input type="submit" value="Show author">
 		</form>
+		<hr>
+
+		{% for type, array in env %}
+			<h2>{{type}}</h2>
+			{% for key, val in array %} 
+				- {{ loop.parent.loop.index }}.{{ loop.index }}: {{key}} = {{val}}<br>
+			{% endfor %}
+		{% endfor %}
+
+		<hr>
 	</body>
 </html>
 

@@ -40,16 +40,19 @@ Document style
 [Parser for Markdown](http://daringfireball.net/projects/markdown/dingus)
 
 
-PHP Methods types
------------------
+PHP Methods class/function/var types
+------------------------------------
 #### public 
-	scope to make that variable/function available from anywhere, other classes and instances of the object.
+Scope to make that variable/function available from anywhere, other classes and instances of the object.
 
 #### private
-	scope when you want your variable/function to be visible in its own class only.
+Scope when you want your variable/function to be visible in its own class only.
 
 #### protected
-	scope when you want to make your variable/function visible in all classes that extend current class.
+Scope when you want to make your variable/function visible in all classes that extend current class.
+
+#### abstract
+TODO
 
 
 PHP Magic constants 
@@ -119,6 +122,23 @@ MVC - Model View Controller
 	|   |- user_test.php
 	|
 	|- index.php
+
+
+Databases
+=========
+
+MySQL
+-----
+
+
+
+PostgreSQL
+----------
+PHP Driver: sudo apt-get install php5-pgsql
+
+### PgBouncer
+Connection pooling is done with [PgBouncer](http://wiki.postgresql.org/wiki/PgBouncer#Documentation)
+
 
 
 

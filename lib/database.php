@@ -1,9 +1,9 @@
 <?php
-include_once(SERVER_ROOT.'/lib/tools.php');
+//include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * The Database Library handles database interaction for the application
  */
-abstract class Database_Lib extends Tools {
+abstract class Database extends Tools {
 	abstract protected function connect();
 	abstract protected function disconnect();
 	abstract protected function prepare($query);

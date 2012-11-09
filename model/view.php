@@ -1,9 +1,13 @@
 <?php
-include_once(SERVER_ROOT.'/lib/tools.php');
+//include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * Handles the view functionality of our MVC framework
  */
 class View_Model extends Tools {
+	/* 
+	 * Holds the input opt when __construct had been called.
+	 */
+	private $opt;
 	/**
 	 * Holds variables assigned to template
 	 */
@@ -17,14 +21,19 @@ class View_Model extends Tools {
 	/**
 	 * Accept a template to load
 	 */
-	public function __construct ($template) {
+	public function __construct (array $opt, $controller_class) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
 		     .' [ob_level='.ob_get_level().'] '
-		     .__FUNCTION__.'('.$template.')'.' #'.__LINE__);
+		     .__FUNCTION__.'('.$controller_class.')'.' #'.__LINE__);
+
+		$this->opt = $opt;
 
 		//compose file name
-		$file = SERVER_ROOT . '/view/' . strtolower($template);
+		$class_name = explode('_', strtolower($controller_class));
+		$template = $opt['template'][$class_name[0]];
+		Tools::log(implode(', ', $class_name).' :: '.$template);
+		$file = SERVER_ROOT.'/view/'.$template;
 		//echo "View_Model->__construct() [ $file ]";
 		if (file_exists($file)) {
 			/**
@@ -51,8 +60,10 @@ class View_Model extends Tools {
 	 * @param $variable
 	 * @param $value
 	 */
-	public function assign ($variable, $value) {
-		$this->data[$variable] = $value;
+	//public function assign ($variable, $value) {
+	public function assign ($data) {
+		$this->data = $data;
+		//$this->data[$variable] = $value;
 		//echo 'View_Model->assign();';
 	}
 
