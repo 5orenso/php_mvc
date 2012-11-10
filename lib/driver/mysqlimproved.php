@@ -4,10 +4,15 @@
  * interaction with a MySQL database
  */
 class MysqlImproved_Driver extends Database {
-	/* 
-	 * Holds the input opt when __construct had been called.
-	 */
+	// Holds the input opt when __construct had been called.
 	private $opt;
+	// Connection holds MySQLi resource
+	private $connection;
+	// Query to perform
+	private $query;
+	// Result holds data retrieved from server
+	private $result = array();
+	
 
 	public function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
@@ -22,26 +27,11 @@ class MysqlImproved_Driver extends Database {
 	}
 	
 	/**
-	 * Connection holds MySQLi resource
-	 */
-	private $connection;
-	
-	/**
-	 * Query to perform
-	 */
-	private $query;
-	
-	/**
-	 * Result holds data retrieved from server
-	 */
-	private $result;
-	
-	/**
 	 * Create new connection to database
 	 */ 
 	public function connect () {
-		$this->log(__FILE__.' : ');
-		$this->dumper($this->opt);
+		//$this->log(__FILE__.' : ');
+		//$this->dumper($this->opt);
 		
 		//create new mysqli connection
 		$this->connection = new mysqli(
@@ -89,14 +79,16 @@ class MysqlImproved_Driver extends Database {
 	/**
 	 * Execute a prepared query
 	 */
-	public function query () {
+	public function query ($table, $limit) {
 		if (isset($this->query)) {
-			//execute prepared query and store in result variable
-			$this->result = $this->connection->query($this->query);
-		
+			// execute prepared query and store in result variable
+			$result = $this->connection->query($this->query);
+			// parse results and store into array $this->result
+			while ($row = $result->fetch_object()) {
+				array_push($this->result, $row);
+			}
 			return TRUE;
 		}
-		
 		return FALSE;		
 	}
 	
@@ -109,22 +101,18 @@ class MysqlImproved_Driver extends Database {
 		if (isset($this->result)) {
 			switch ($type) {
 				case 'array':
-					//fetch a row as array
-					$row = $this->result->fetch_array();				
+					return $this->result;
 					break;
 				
-				case 'object':				
-					//fall through...
-				
-				default:				
-					//fetch a row as object
-					$row = $this->result->fetch_object();	
+				case 'object':
+					return array_shift($this->result);
 					break;
-			}
-			
-			return $row;
-		}
-		
+				
+				default:
+					break;
+			}	
+		}		
 		return FALSE;
 	}
+
 }

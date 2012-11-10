@@ -13,9 +13,9 @@ class News_Controller extends Tools {
 
 	public function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
-		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .' [ob_level='.ob_get_level().'] '
-		     .__FUNCTION__.'()'.' #'.__LINE__);
+			 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
+			 .' [ob_level='.ob_get_level().'] '
+			 .__FUNCTION__.'()'.' #'.__LINE__);
 
 		$this->opt = $opt;
 	}
@@ -29,14 +29,22 @@ class News_Controller extends Tools {
 	 * 
 	 * @param array $getVars the GET variables posted to index.php
 	 */
-	public function main(array $getVars) {
+	public function main(array $opt) {
 		$newsModel = new News_Model($this->opt);
 
 		//$json_env_str = $this->call_rest_api('GET', 'http://dev.zu.no/php_mvc/env.php');
 		//$env = json_decode($json_env_str, 1);
 		
 		// get an article
-		$article = $newsModel->get_article($getVars['author']);
+		$article = $newsModel->get_article(array(
+												'author' => $opt['author'],
+												'limit'  => 2
+												));
+
+		$artlist = $newsModel->get_article(array(
+												'author' => $opt['author'],
+												'limit'  => 10
+												));
 		
 		// create a new view with class name of this controller.
 		$view = new View_Model($this->opt, __CLASS__);
@@ -44,9 +52,10 @@ class News_Controller extends Tools {
 	
 		// assign article data to view
 		$view->assign(array(
-		              	    'article' => $article,
-		              	    'env'     => $env
-		              	   ));
+							'article' => $article,
+							'artlist' => $artlist,
+							'env'     => $env
+						   ));
 
 		//echo 'News_Controller->main();';
 		//$view->render();

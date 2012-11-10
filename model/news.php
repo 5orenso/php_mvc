@@ -5,21 +5,17 @@
  * The News Model does the back-end heavy lifting for the News Controller
  */
 class News_Model {
-	/**
-	 * Holds instance of database connection
-	 */
+	// Holds instance of database connection
 	private $db;
-
-	/* 
-	 * Holds the input opt when __construct had been called.
-	 */
+	// Holds the input opt when __construct had been called.
 	private $opt;
+
 		
 	public function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'\\' : '')
-		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .' [ob_level='.ob_get_level().'] '
-		     .__FUNCTION__.'()'.' #'.__LINE__);
+			 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
+			 .' [ob_level='.ob_get_level().'] '
+			 .__FUNCTION__.'()'.' #'.__LINE__);
 
 		$this->opt = $opt;
 
@@ -49,21 +45,24 @@ class News_Model {
 	 * 
 	 * @return array $article
 	 */
-	public function get_article($author) {		
-		//connect to database
-		$this->db->connect();
-		
+	public function get_article(array $opt) {		
+		// connect to database
+		$this->db->connect();		
 
 		if ($this->opt['database']['driver'] == 'mongodb') {
-			$article = $this->db->find('articles', array(
-			               	 				 		 'author' => $author
-			                						));
+			// MongoDB
+			$this->db->prepare(array(
+									 'author' => $opt['author']
+									));
+			$this->db->query('articles', $opt['limit']);
+			$article = $this->db->fetch('object');
 
 		} else {
-			//sanitize data
-			$author = $this->db->escape($author);
-		
-			//prepare query
+			// MySQL, PostgreSQL
+			// sanitize data
+			$author = $this->db->escape($opt['author']);
+			// prepare query
+			// TODO: Move this to a generic database class or a driver specific.
 			$this->db->prepare(
 							   "
 			SELECT
@@ -78,18 +77,14 @@ class News_Model {
 			LIMIT
 				1
 			;
-			                   ");
-		
-			//execute query
-			$this->db->query();
-		
-			$article = $this->db->fetch('array');
-			// echo '<b>';
-			// print_r($article);
-			// echo '</b><br>';
+							   ");
+
+			// execute query
+			$this->db->query('articles', 1);
+			$article = $this->db->fetch('object');
 		}
 		
 		return $article;
 	}
-	
+
 }

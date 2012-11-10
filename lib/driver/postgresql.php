@@ -4,10 +4,15 @@
  * interaction with a MySQL database
  */
 class Postgresql_Driver extends Database {
-	/* 
-	 * Holds the input opt when __construct had been called.
-	 */
+	// Holds the input opt when __construct had been called.
 	private $opt;
+	// Connection holds MySQLi resource
+	private $connection;
+	// Query to perform
+	private $query;
+	// Result holds data retrieved from server
+	private $result = array();
+
 
 	public function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
@@ -22,35 +27,20 @@ class Postgresql_Driver extends Database {
 	}
 
 	/**
-	 * Connection holds MySQLi resource
-	 */
-	private $connection;
-	
-	/**
-	 * Query to perform
-	 */
-	private $query;
-	
-	/**
-	 * Result holds data retrieved from server
-	 */
-	private $result;
-	
-	/**
 	 * Create new connection to database
 	 */ 
 	public function connect () {
-		$this->log(__FILE__.' : ');
-		$this->dumper($this->opt);
+		//$this->log(__FILE__.' : ');
+		//$this->dumper($this->opt);
 		
 		//create new postgresql connection
-		$this->connection = pg_connect(
+		$this->connection = pg_pconnect(
 		                  				'host='    .$this->coalesce($this->opt, 'host', NULL).' '.
 		                  				'dbname='  .$this->coalesce($this->opt, 'db',   NULL).' '.
 		                  				'user='    .$this->coalesce($this->opt, 'user', NULL).' '.
 		                  				'password='.$this->coalesce($this->opt, 'pwd',  NULL).' '.
 		                  				'port='    .$this->coalesce($this->opt, 'port',  NULL).' '
-		                  			  ) or die ("Could not connect to server\n");
+		                  			   ) or die ("Could not connect to server\n");
 		
 		return TRUE;
 	}
@@ -87,10 +77,13 @@ class Postgresql_Driver extends Database {
 	/**
 	 * Execute a prepared query
 	 */
-	public function query () {
+	public function query ($table, $limit) {
 		if (isset($this->query)) {
-			//execute prepared query and store in result variable
-			$this->result = pg_query($this->connection, $this->query) or die("Cannot execute query: $query\n");		
+			// execute prepared query and store in result variable
+			$result = pg_query($this->connection, $this->query) or die("Cannot execute query: $query\n");
+			while ($row = pg_fetch_assoc($result)) {
+				array_push($this->result, $row);
+			}
 			return TRUE;
 		}		
 		return FALSE;		
@@ -105,22 +98,18 @@ class Postgresql_Driver extends Database {
 		if (isset($this->result)) {
 			switch ($type) {
 				case 'array':
-					//fetch a row as array
-					$row = pg_fetch_assoc($this->result);
+					return $this->result;
 					break;
 				
-				case 'object':				
-					//fall through...
+				case 'object':
+					return array_shift($this->result);
+					break;
 				
 				default:				
-					//fetch a row as object
-					$row = pg_fetch_object($this->result);
 					break;
 			}
-			
-			return $row;
 		}
-		
 		return FALSE;
 	}
+	
 }
