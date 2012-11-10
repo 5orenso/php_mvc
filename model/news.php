@@ -32,8 +32,12 @@ class News_Model {
 		} elseif ($this->opt['database']['driver'] == 'rest_api') {
 			// $this->db = new MysqlImproved_Driver($opt['mysql']);
 
+		} elseif ($this->opt['database']['driver'] == 'mongodb') {
+			$this->db = new Mongodb_Driver($this->opt['mongodb']);
+
 		}
 	}
+
 	public function __destruct () {
 
 	}	
@@ -49,12 +53,19 @@ class News_Model {
 		//connect to database
 		$this->db->connect();
 		
-		//sanitize data
-		$author = $this->db->escape($author);
+
+		if ($this->opt['database']['driver'] == 'mongodb') {
+			$article = $this->db->find('articles', array(
+			               	 				 		 'author' => $author
+			                						));
+
+		} else {
+			//sanitize data
+			$author = $this->db->escape($author);
 		
-		//prepare query
-		$this->db->prepare(
-			"
+			//prepare query
+			$this->db->prepare(
+							   "
 			SELECT
 				date,
 				title,
@@ -67,16 +78,16 @@ class News_Model {
 			LIMIT
 				1
 			;
-			"
-		);
+			                   ");
 		
-		//execute query
-		$this->db->query();
+			//execute query
+			$this->db->query();
 		
-		$article = $this->db->fetch('array');
-		echo '<b>';
-		print_r($article);
-		echo '</b><br>';
+			$article = $this->db->fetch('array');
+			// echo '<b>';
+			// print_r($article);
+			// echo '</b><br>';
+		}
 		
 		return $article;
 	}

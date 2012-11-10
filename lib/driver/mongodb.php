@@ -3,7 +3,7 @@
  * The MySQL Improved driver extends the Database_Library to provide 
  * interaction with a MySQL database
  */
-class Postgresql_Driver extends Database {
+class Mongodb_Driver extends Database {
 	/* 
 	 * Holds the input opt when __construct had been called.
 	 */
@@ -25,6 +25,10 @@ class Postgresql_Driver extends Database {
 	 * Connection holds MySQLi resource
 	 */
 	private $connection;
+	/**
+	 * Collection holds MongoDB collection
+	 */
+	private $collection;
 	
 	/**
 	 * Query to perform
@@ -43,15 +47,15 @@ class Postgresql_Driver extends Database {
 		$this->log(__FILE__.' : ');
 		$this->dumper($this->opt);
 		
-		//create new postgresql connection
-		$this->connection = pg_connect(
-		                  				'host='    .$this->coalesce($this->opt, 'host', NULL).' '.
-		                  				'dbname='  .$this->coalesce($this->opt, 'db',   NULL).' '.
-		                  				'user='    .$this->coalesce($this->opt, 'user', NULL).' '.
-		                  				'password='.$this->coalesce($this->opt, 'pwd',  NULL).' '.
-		                  				'port='    .$this->coalesce($this->opt, 'port',  NULL).' '
-		                  			  ) or die ("Could not connect to server\n");
-		
+		//create new mongo connection
+		$m = new Mongo(
+		               "mongodb://".
+		               $this->coalesce($this->opt, 'host', NULL).':'.
+		               $this->coalesce($this->opt, 'port', NULL)
+		              ); // array("replicaSet" => "cluster"));
+		// var_dump($m);
+  		$this->connection = $m->selectDB($this->coalesce($this->opt, 'db',   NULL));
+		//$db->authenticate("my_login", "my_password");
 		return TRUE;
 	}
 
@@ -60,7 +64,7 @@ class Postgresql_Driver extends Database {
 	 */
 	public function disconnect () {
 		//clean up connection!
-		pg_close($this->connection);
+		//pg_close($this->connection);
 		return TRUE;
 	}
 	
@@ -71,7 +75,7 @@ class Postgresql_Driver extends Database {
 	 */
 	public function prepare ($query) {
 		//store query in query variable
-		$this->query = $query;	
+		//$this->query = $query;	
 		return TRUE;
 	}
 	
@@ -81,18 +85,14 @@ class Postgresql_Driver extends Database {
 	 * @param $data
 	 */
 	public function escape ($data) {
-		return pg_escape_string($data);
+		//return pg_escape_string($data);
+		return $data;
 	}
 	
 	/**
 	 * Execute a prepared query
 	 */
 	public function query () {
-		if (isset($this->query)) {
-			//execute prepared query and store in result variable
-			$this->result = pg_query($this->connection, $this->query) or die("Cannot execute query: $query\n");		
-			return TRUE;
-		}		
 		return FALSE;		
 	}
 	
@@ -101,26 +101,20 @@ class Postgresql_Driver extends Database {
 	 * 
 	 * @param $type
 	 */
-	public function fetch ($type = 'object') {
-		if (isset($this->result)) {
-			switch ($type) {
-				case 'array':
-					//fetch a row as array
-					$row = pg_fetch_assoc($this->result);
-					break;
-				
-				case 'object':				
-					//fall through...
-				
-				default:				
-					//fetch a row as object
-					$row = pg_fetch_object($this->result);
-					break;
-			}
-			
-			return $row;
-		}
-		
+	public function fetch ($type = 'object') {		
 		return FALSE;
 	}
+
+
+	public function find ($collection, array $filter) {
+		$this->collection = $this->connection->selectCollection($collection);
+		print_r($filter);
+		$this->result = $this->collection->find($filter);
+		foreach ($this->result as $doc) {
+			print_r($doc);
+			return $doc;
+		}
+
+	}
+
 }

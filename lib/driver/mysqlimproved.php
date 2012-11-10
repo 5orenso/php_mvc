@@ -19,7 +19,8 @@ class MysqlImproved_Driver extends Database {
 
 	public function __destruct () {
 
-	}	
+	}
+	
 	/**
 	 * Connection holds MySQLi resource
 	 */
