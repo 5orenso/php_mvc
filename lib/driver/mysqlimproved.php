@@ -12,6 +12,8 @@ class MysqlImproved_Driver extends Database {
 	private $query;
 	// Result holds data retrieved from server
 	private $result = array();
+	// Database table or collection to bind to.
+	private $table;
 	
 
 	public function __construct (array $opt) {
@@ -30,19 +32,13 @@ class MysqlImproved_Driver extends Database {
 	 * Create new connection to database
 	 */ 
 	public function connect () {
-		//$this->log(__FILE__.' : ');
-		//$this->dumper($this->opt);
+		if (empty($this->connection)) {
+			//$this->log(__FILE__.' : ');
+			//$this->dumper($this->opt);
 		
-		//create new mysqli connection
-		$this->connection = new mysqli(
-		                               $this->coalesce($this->opt, 'host', NULL),
-		                               $this->coalesce($this->opt, 'user', NULL),
-		                               $this->coalesce($this->opt, 'pwd', NULL),
-		                               $this->coalesce($this->opt, 'db', NULL),
-		                               $this->coalesce($this->opt, 'port', NULL),
-		                               $this->coalesce($this->opt, 'socket', NULL)
-		                              );
-		
+			//create new mysqli connection
+			$this->connection = Tools::db_connect_mysqli($this->opt);
+		}
 		return TRUE;
 	}
 
@@ -61,8 +57,10 @@ class MysqlImproved_Driver extends Database {
 	 * 
 	 * @param $query
 	 */
-	public function prepare ($query) {
-		//store query in query variable
+	public function prepare ($query, $table) {
+		// Store table/collection in this class.
+		$this->table = $table;
+		// store query in this class.
 		$this->query = $query;	
 		return TRUE;
 	}
@@ -79,7 +77,7 @@ class MysqlImproved_Driver extends Database {
 	/**
 	 * Execute a prepared query
 	 */
-	public function query ($table, $limit) {
+	public function query ($limit) {
 		if (isset($this->query)) {
 			// execute prepared query and store in result variable
 			$result = $this->connection->query($this->query);

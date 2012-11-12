@@ -37,17 +37,10 @@ class Mongodb_Driver extends Database {
 		//$this->log(__FILE__.' : ');
 		//$this->dumper($this->opt);
 		
-		//create new mongo connection
-		$m = new Mongo(
-		               "mongodb://".
-		               $this->coalesce($this->opt, 'host', NULL).':'.
-		               $this->coalesce($this->opt, 'port', NULL)
-		               , array(
-		               		   'persist' => 32
-		               		  )); // array("replicaSet" => "cluster"));
-		// var_dump($m);
-  		$this->connection = $m->selectDB($this->coalesce($this->opt, 'db',   NULL));
-		//$db->authenticate("my_login", "my_password");
+		if (empty($this->connection)) {
+			//create new mongo connection
+			$this->connection = Tools::db_connect_mongodb($this->opt);
+		}
 		return TRUE;
 	}
 
@@ -65,8 +58,10 @@ class Mongodb_Driver extends Database {
 	 * 
 	 * @param $query
 	 */
-	public function prepare ($query) {
-		//store query in query variable
+	public function prepare ($query, $table) {
+		// Store table/collection in this class.
+		$this->table = $table;
+		// store query in this class.
 		$this->query = $query;
 		return TRUE;
 	}
@@ -84,10 +79,10 @@ class Mongodb_Driver extends Database {
 	/**
 	 * Execute a prepared query
 	 */
-	public function query ($table, $limit) {
+	public function query ($limit) {
 		if (isset($this->query)) {
 			// select collection
-			$this->collection = $this->connection->selectCollection($table);
+			$this->collection = $this->connection->selectCollection($this->table);
 			// execute query
 			$mongodb_cursor = $this->collection->find($this->query)->limit($limit);
 			// parse results and store into array $this->result

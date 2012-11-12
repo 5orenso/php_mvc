@@ -12,14 +12,17 @@ class Postgresql_Driver extends Database {
 	private $query;
 	// Result holds data retrieved from server
 	private $result = array();
+	// Database table or collection to bind to.
+	private $table;
 
 
-	public function __construct (array $opt) {
+	public function __construct (array $opt, $connection) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
 		     .' [ob_level='.ob_get_level().'] '
 		     .__FUNCTION__.'()'.' #'.__LINE__);
 		$this->opt = $opt;
+		$this->connection = $connection;
 	}
 
 	public function __destruct () {
@@ -30,17 +33,13 @@ class Postgresql_Driver extends Database {
 	 * Create new connection to database
 	 */ 
 	public function connect () {
-		//$this->log(__FILE__.' : ');
-		//$this->dumper($this->opt);
+		if (empty($this->connection)) {
+			//$this->log(__FILE__.' : ');
+			//$this->dumper($this->opt);
 		
-		//create new postgresql connection
-		$this->connection = pg_pconnect(
-		                  				'host='    .$this->coalesce($this->opt, 'host', NULL).' '.
-		                  				'dbname='  .$this->coalesce($this->opt, 'db',   NULL).' '.
-		                  				'user='    .$this->coalesce($this->opt, 'user', NULL).' '.
-		                  				'password='.$this->coalesce($this->opt, 'pwd',  NULL).' '.
-		                  				'port='    .$this->coalesce($this->opt, 'port',  NULL).' '
-		                  			   ) or die ("Could not connect to server\n");
+			//create new postgresql connection
+			$this->connection = Tools::db_connect_postgresql($this->opt);
+		}
 		
 		return TRUE;
 	}
@@ -59,8 +58,10 @@ class Postgresql_Driver extends Database {
 	 * 
 	 * @param $query
 	 */
-	public function prepare ($query) {
-		//store query in query variable
+	public function prepare ($query, $table) {
+		// Store table/collection in this class.
+		$this->table = $table;
+		// store query in this class.
 		$this->query = $query;	
 		return TRUE;
 	}
@@ -77,7 +78,7 @@ class Postgresql_Driver extends Database {
 	/**
 	 * Execute a prepared query
 	 */
-	public function query ($table, $limit) {
+	public function query ($limit) {
 		if (isset($this->query)) {
 			// execute prepared query and store in result variable
 			$result = pg_query($this->connection, $this->query) or die("Cannot execute query: $query\n");

@@ -2,12 +2,29 @@
 //namespace CMS;
 /**
  * This file handles the retrieval and serving of news articles
+ * Build as Singelton class
+ *
+ * Typical usage:
+ *   $db = Tools::db_connect();
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class Tools {
 
-	private $opt;
+	/**
+	* Instance of the database class
+	* @static Database $instance
+	*/
+	private static $instance;
+	/**
+	* Database connection
+	* @access private
+	* @var PDO $connection
+	*/
+	private static $connection;
 
-	public function __construct (array $opt) {
+
+	private function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
 			 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
 			 .' [ob_level='.ob_get_level().'] '
@@ -15,10 +32,73 @@ class Tools {
 		$this->opt = $opt;
 	}
 
-
 	public function __destruct () {
 
 	}
+
+
+	/**
+	* Gets an instance of the Database class width the PostgreSQL driver.
+	*
+	* @static
+	* @return Database An instance of the database singleton class.
+	*/
+	public static function db_connect_postgresql (array $opt) {
+		if (empty(self::$connection)) {
+			self::$connection = pg_pconnect(
+				'host='    .self::coalesce($opt, 'host', NULL).' '.
+				'dbname='  .self::coalesce($opt, 'db',   NULL).' '.
+				'user='    .self::coalesce($opt, 'user', NULL).' '.
+				'password='.self::coalesce($opt, 'pwd',  NULL).' '.
+				'port='    .self::coalesce($opt, 'port',  NULL).' '
+			) or die ("Could not connect to server\n");
+		}
+		return self::$connection;
+	}
+
+	/**
+	* Gets an instance of the Database class with the MySQLi driver
+	*
+	* @static
+	* @return Database An instance of the database singleton class.
+	*/
+	public static function db_connect_mysqli (array $opt) {
+		if (empty(self::$connection)) {
+			self::$connection = new mysqli(
+				Tools::coalesce($opt, 'host', NULL),
+				Tools::coalesce($opt, 'user', NULL),
+				Tools::coalesce($opt, 'pwd', NULL),
+				Tools::coalesce($opt, 'db', NULL),
+				Tools::coalesce($opt, 'port', NULL),
+				Tools::coalesce($opt, 'socket', NULL)
+			);
+		}
+		return self::$connection;
+	}
+
+	/**
+	* Gets an instance of the Database class with the MySQLi driver
+	*
+	* @static
+	* @return Database An instance of the database singleton class.
+	*/
+	public static function db_connect_mongodb (array $opt) {
+		if (empty(self::$connection)) {
+			$m = new Mongo(
+				"mongodb://".
+				Tools::coalesce($opt, 'host', NULL).':'.
+				Tools::coalesce($opt, 'port', NULL),
+				array(
+					'persist' => 32
+				)); // array("replicaSet" => "cluster"));
+			//$db->authenticate("my_login", "my_password");
+			self::$connection = $m->selectDB(Tools::coalesce($opt, 'db',   NULL));
+		}
+		return self::$connection;
+	}
+
+
+
 
 	/*
 	 * Coalesce function like in SQL.

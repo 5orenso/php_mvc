@@ -23,7 +23,7 @@ class News_Model {
 			$this->db = new MysqlImproved_Driver($this->opt['mysql']);
 
 		} elseif ($this->opt['database']['driver'] == 'postgresql') {
-			$this->db = new Postgresql_Driver($this->opt['postgresql']);
+			$this->db = new Postgresql_Driver($this->opt['postgresql'], $db);
 
 		} elseif ($this->opt['database']['driver'] == 'rest_api') {
 			// $this->db = new MysqlImproved_Driver($opt['mysql']);
@@ -53,8 +53,8 @@ class News_Model {
 			// MongoDB
 			$this->db->prepare(array(
 									 'author' => $opt['author']
-									));
-			$this->db->query('articles', $opt['limit']);
+									), 'articles');
+			$this->db->query($opt['limit']);
 			$article = $this->db->fetch('object');
 
 		} else {
@@ -77,10 +77,10 @@ class News_Model {
 			LIMIT
 				1
 			;
-							   ");
+							   ", 'articles');
 
 			// execute query
-			$this->db->query('articles', 1);
+			$this->db->query(1);
 			$article = $this->db->fetch('object');
 		}
 		

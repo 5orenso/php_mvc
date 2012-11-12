@@ -3,7 +3,7 @@
 /**
  * Handles the view functionality of our MVC framework
  */
-class View_Model extends Tools {
+class View_Model {
 	/* 
 	 * Holds the input opt when __construct had been called.
 	 */

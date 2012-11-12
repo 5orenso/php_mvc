@@ -4,7 +4,7 @@
 /**
  * This file handles the retrieval and serving of news articles
  */
-class News_Controller extends Tools {
+class News_Controller {
 
 	/* 
 	 * Holds the input opt when __construct had been called.
