@@ -2,6 +2,8 @@
 /**
  * The MySQL Improved driver extends the Database_Library to provide 
  * interaction with a MySQL database
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class MysqlImproved_Driver extends Database {
 	// Holds the input opt when __construct had been called.

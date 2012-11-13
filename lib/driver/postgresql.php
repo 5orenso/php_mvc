@@ -2,6 +2,8 @@
 /**
  * The MySQL Improved driver extends the Database_Library to provide 
  * interaction with a MySQL database
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class Postgresql_Driver extends Database {
 	// Holds the input opt when __construct had been called.
@@ -58,11 +60,27 @@ class Postgresql_Driver extends Database {
 	 * 
 	 * @param $query
 	 */
-	public function prepare ($query, $table) {
+	public function prepare (array $query, $table, $limit) {
 		// Store table/collection in this class.
 		$this->table = $table;
 		// store query in this class.
-		$this->query = $query;	
+		$this->query = $query;
+
+		// TODO : Make SQL for this database version based on input array.
+		$sql = "
+			SELECT date, title, content, author
+			  FROM ".$table."
+			 WHERE 1=1 ";
+		while (list($key, $val) = each($query['eq'])) {
+			if (!empty($val)) {
+				$sql .= " AND ".$key." = '".$this->escape($val)."' ";
+			}
+		}
+
+		$sql .= " LIMIT ".$limit." ";
+		echo '<xmp>'.$sql.'</xmp>';
+
+		$this->query = $sql;
 		return TRUE;
 	}
 	

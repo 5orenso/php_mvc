@@ -2,6 +2,8 @@
 /**
  * The MySQL Improved driver extends the Database_Library to provide 
  * interaction with a MySQL database
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class Mongodb_Driver extends Database {
 	// Holds the input opt when __construct had been called.
@@ -16,7 +18,8 @@ class Mongodb_Driver extends Database {
 	private $result = array();
 	// Database table or collection to bind to.
 	private $table;
-	
+
+
 
 	public function __construct (array $opt) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')

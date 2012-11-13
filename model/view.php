@@ -1,7 +1,8 @@
 <?php
-//include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * Handles the view functionality of our MVC framework
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class View_Model {
 	/* 
@@ -20,12 +21,15 @@ class View_Model {
 
 	/**
 	 * Accept a template to load
+	 * @param array $opt Options for this function as an assoc array.
+	 * @param string $controller_class Name of caller class.
+	 * @return boolean
 	 */
 	public function __construct (array $opt, $controller_class) {
 		Tools::log(__FILE__.' '.(__NAMESPACE__ ? __NAMESPACE__.'::' : '')
-		     .(__CLASS__ ? __CLASS__ : 'noclass').'->'
-		     .' [ob_level='.ob_get_level().'] '
-		     .__FUNCTION__.'('.$controller_class.')'.' #'.__LINE__);
+			 .(__CLASS__ ? __CLASS__ : 'noclass').'->'
+			 .' [ob_level='.ob_get_level().'] '
+			 .__FUNCTION__.'('.$controller_class.')'.' #'.__LINE__);
 
 		$this->opt = $opt;
 
@@ -45,7 +49,9 @@ class View_Model {
 			$this->render = strtolower($template);
 			//echo "View_Model->__construct() : $template";
 			//echo "View_Model->__construct() [ $file ]";
-		}		
+			return TRUE;
+		}
+		return FALSE;
 	}
 
 	public function __destruct () {
@@ -80,8 +86,8 @@ class View_Model {
 		Twig_Autoloader::register();
 		$loader = new Twig_Loader_Filesystem(SERVER_ROOT.'/view');
 		$twig = new Twig_Environment($loader, array(
-		    'cache' => SERVER_ROOT.'/view_cache',
-		    'auto_reload' => 1
+			'cache' => SERVER_ROOT.'/view_cache',
+			'auto_reload' => 1
 		));
 
 		// Turn output buffering on, capturing all output

@@ -1,8 +1,8 @@
 <?php 
-//namespace CMS;
-//include_once(SERVER_ROOT.'/lib/tools.php');
 /**
  * This file handles the retrieval and serving of news articles
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class News_Controller {
 
@@ -37,9 +37,18 @@ class News_Controller {
 		
 		// get an article
 		$article = $newsModel->get_article(array(
-												'author' => $opt['author'],
-												'limit'  => 2
-												));
+			'eq' => array(         // equals
+				'author' => $opt['author'],
+				'title'  => $opt['title'],
+			),
+			'gt' => array(),       // greater than
+			'lt' => array(),       // less than
+			're' => array(),       // regexp match
+			'overlaps' => array(), // data overlaps
+			// TODO : Add more optins.
+
+			'limit'  => 2,
+		));
 
 		$artlist = $newsModel->get_article(array(
 												'author' => $opt['author'],

@@ -1,6 +1,7 @@
 What is this?
 =============
-This is a simple PHP MVC framework made by me trying to learn the gory details.
+This is a simple PHP MVC framework made by me trying to learn the gory details of a
+Model View Controller concept in PHP.
 
 Who?
 ====
@@ -11,14 +12,6 @@ Why?
 I have been working with Perl for 15 years and now is the time to learn something new.
 
 Please feel free to contribute to this project.
-
-
-Packages are found here:
-------------------------
-[Composer packages](https://packagist.org/)
-
-Pear:
-apt-get
 
 
 Template engine 
@@ -54,6 +47,8 @@ Scope when you want to make your variable/function visible in all classes that e
 #### abstract
 TODO
 
+#### static
+TODO
 
 PHP Magic constants 
 -------------------
@@ -101,27 +96,46 @@ MVC - Model View Controller
 								  +------------+
 	File structure
 	--------------
+	|- cli                        (command line stuff)
+	|
+	|- config                     (config files)
+	|   |- main.ini
+	|
 	|- controller
-	|   |- news.php
-	|   |- router.php
+	|   |- news.php               (news controller)
+	|   |- router.php             (main app router)
+	|
+	|- db                         (database sql files)
+	|
+	|- lib                        (general libraries)
+	|   |- driver                 (general database drivers)
+	|   |   |- mongodb.php
+	|   |   |- mysqlimproved.php
+	|   |   |- posgresql.php
+	|   |- database.php           (schema for a database driver)
+	|   |- tools.php              (general tools for web apps)
 	|
 	|- model
-	|   |- news.php
-	|   |- view.php
+	|   |- news.php               (news model)
+	|   |- view.php               (view model to load Twig and emit html)
 	|
 	|- view
-	|   |- news.php
+	|   |- news.html              (news html with Twig tags.)
 	|
-	|- lib
-	|   |- driver
-	|   |   |- mysqlimproved.php
-	|   |
-	|   |- database.php
-	|
-	|- test
+	|- test                       (unit tests)
 	|   |- user_test.php
 	|
-	|- index.php
+	|- env.php                    (just an env dumper)
+	|- index.php                  (file to fire up app)
+	|- README.md                  (this file)
+
+
+Packages are found here:
+------------------------
+[Composer packages](https://packagist.org/)
+
+Pear:
+apt-get
 
 
 Databases
@@ -129,17 +143,19 @@ Databases
 
 MySQL
 -----
-
-
+TODO: Add some install instructions and SQL for creating table.
 
 PostgreSQL
 ----------
 PHP Driver: sudo apt-get install php5-pgsql
+TODO: Add some install instructions and SQL for creating table.
 
 ### PgBouncer
 Connection pooling is done with [PgBouncer](http://wiki.postgresql.org/wiki/PgBouncer#Documentation)
 
-
+MongoDB
+-------
+TODO: Add some install instructions and SQL for creating table.
 
 
 

@@ -99,7 +99,6 @@ class Tools {
 
 
 
-
 	/*
 	 * Coalesce function like in SQL.
 	 * Check if $array[$key] is defined.

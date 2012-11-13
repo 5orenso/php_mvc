@@ -1,8 +1,8 @@
 <?php
-//include_once(SERVER_ROOT.'/lib/tools.php');
-//namespace CMS;
 /**
  * The News Model does the back-end heavy lifting for the News Controller
+ * @author Oistein Sorensen <sorenso@gmail.com>
+ * @version 1.0
  */
 class News_Model {
 	// Holds instance of database connection
@@ -45,39 +45,25 @@ class News_Model {
 	 * 
 	 * @return array $article
 	 */
-	public function get_article(array $opt) {		
+	public function get_article (array $opt) {		
 		// connect to database
-		$this->db->connect();		
+		$this->db->connect();
 
 		if ($this->opt['database']['driver'] == 'mongodb') {
 			// MongoDB
 			$this->db->prepare(array(
-									 'author' => $opt['author']
-									), 'articles');
+									 'author' => $opt['author'],
+									 'title'  => 'test title',
+
+									), 'articles', $opt['limit']);
 			$this->db->query($opt['limit']);
 			$article = $this->db->fetch('object');
 
 		} else {
 			// MySQL, PostgreSQL
-			// sanitize data
-			$author = $this->db->escape($opt['author']);
 			// prepare query
 			// TODO: Move this to a generic database class or a driver specific.
-			$this->db->prepare(
-							   "
-			SELECT
-				date,
-				title,
-				content,
-				author
-			FROM
-				articles
-			WHERE
-				author = '$author'
-			LIMIT
-				1
-			;
-							   ", 'articles');
+			$this->db->prepare($opt, 'articles', $opt['limit']);
 
 			// execute query
 			$this->db->query(1);
