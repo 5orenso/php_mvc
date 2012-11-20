@@ -1,5 +1,8 @@
 <html>
-<head></head>
+<head>
+	<title>php_mvc demo.</title>
+	<meta charset="utf-8" />
+</head>
 	<body>
 		<h1>php_mvc</h1>
 		<hr/>
@@ -11,14 +14,53 @@
 		</form>
 		<hr>
 
+
+<h2>Rest API results:</h2>
+
+<!--
+env:{{env}}<br>
 		{% for type, array in env %}
 			<h2>{{type}}</h2>
 			{% for key, val in array %} 
 				- {{ loop.parent.loop.index }}.{{ loop.index }}: {{key}} = {{val}}<br>
+				{% if val is not empty %}
+
+				{% else %}
+					{% for k, v in val %} 
+						&nbsp;&nbsp; - {{ loop.parent.loop.parent.loop.index }}.{{ loop.parent.loop.index }}.{{ loop.index }}: {{k}} = {{v}}<br>
+					{% endfor %}
+
+				{% endif %}
+
 			{% endfor %}
+
 		{% endfor %}
+//-->
+
+{% for idx, el in env %} 
+  <img src="{{el.user.profile_image_url}}" style="float:left;">
+  <b>{{el.user.screen_name}} ({{el.user.followers_count}})</b>
+  {{el.text}}<br>
+  {{el.created_at}} {{el.user.location}}<br clear="all">
+{% endfor %}
+		<hr>
+
+
+
+artlist: {{artlist}}<br>
+
+		{% for art in artlist %}
+			<h2>{{art}}</h2>
+			{% for key, val in art %} 
+				- {{ loop.parent.loop.index }}.{{ loop.index }}: {{key}} = {{val}}<br>
+			{% endfor %}
+
+			<h2>{{art.title}}</h2>
+			<p>{{art.content}}</p>
+		{% endfor %}		
 
 		<hr>
+		Footer :)
 	</body>
 </html>
 

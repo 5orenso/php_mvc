@@ -32,8 +32,17 @@ class News_Controller {
 	public function main(array $opt) {
 		$newsModel = new News_Model($this->opt);
 
-		//$json_env_str = $this->call_rest_api('GET', 'http://dev.zu.no/php_mvc/env.php');
-		//$env = json_decode($json_env_str, 1);
+		// Get news from a REST API
+		$rest_api_url = $this->opt['rest_api']['proto'].'://'.
+						$this->opt['rest_api']['host'].':'.
+						$this->opt['rest_api']['port'].
+						'/api/article/get/'.$opt['id'].'?'.
+						'limit='.$opt['limit'].
+						'&offset='.$opt['offset'].
+						'&sort='.$opt['sort'];
+
+		$json_env_str = Tools::call_rest_api('GET', $rest_api_url);
+		$env = json_decode($json_env_str, 1);
 		
 		// get an article
 		$article = $newsModel->get_article(array(
@@ -47,13 +56,15 @@ class News_Controller {
 			'overlaps' => array(), // data overlaps
 			// TODO : Add more optins.
 
-			'limit'  => 2,
+			'limit'  => 1,
 		));
 
 		$artlist = $newsModel->get_article(array(
-												'author' => $opt['author'],
-												'limit'  => 10
-												));
+			'eq' => array(
+				'author' => $opt['author'],
+			),
+			'limit'  => 10,
+		));
 		
 		// create a new view with class name of this controller.
 		$view = new View_Model($this->opt, __CLASS__);

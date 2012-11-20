@@ -78,7 +78,7 @@ class Postgresql_Driver extends Database {
 		}
 
 		$sql .= " LIMIT ".$limit." ";
-		echo '<xmp>'.$sql.'</xmp>';
+		//echo '<xmp>'.$sql.'</xmp>';
 
 		$this->query = $sql;
 		return TRUE;

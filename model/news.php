@@ -66,8 +66,9 @@ class News_Model {
 			$this->db->prepare($opt, 'articles', $opt['limit']);
 
 			// execute query
-			$this->db->query(1);
-			$article = $this->db->fetch('object');
+			$this->db->query($opt['limit']);
+			$article = $this->db->fetch($opt['limit'] > 1 ? 'array' : 'object');
+			//var_dump($article);
 		}
 		
 		return $article;

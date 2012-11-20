@@ -125,10 +125,10 @@ class Tools {
 	 * Used for debugging.
 	 */
 	public function dumper ($var) {
-		echo Tools::timestamp();
-		echo ' : <b>';
-		print_r($var);
-		echo '</b><br>';
+		//echo Tools::timestamp();
+		//echo ' : <b>';
+		//print_r($var);
+		//echo '</b><br>';
 	}
 
 	/* 
@@ -136,10 +136,10 @@ class Tools {
 	 * TODO: Configure this to log to other places than stdout.
 	 */
 	public function log ($var) {
-		echo Tools::timestamp();
-		echo ' : ';
-		echo($var);
-		echo '<br>';
+		//echo Tools::timestamp();
+		//echo ' : ';
+		//echo($var);
+		//echo '<br>';
 	}
 
 	/* 
