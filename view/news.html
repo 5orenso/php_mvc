@@ -8,12 +8,24 @@
 		<hr/>
 		<h4>{{article.title}}</h4>
 		<p>{{article.content}}</p>
-		<form method="post" action="./index.php?news">
+		<form method="post" action="./?news">
+			<input type="hidden" name="id" value="{{fdat.id}}">
+			<input type="hidden" name="limit" value="{{fdat.limit}}">
+			<input type="hidden" name="sort" value="{{fdat.sort}}">
+			<input type="hidden" name="offset" value="{{fdat.offset}}">
 			<input type="text" name="author" value="John Squibb">
 			<input type="submit" value="Show author">
 		</form>
 		<hr>
-
+		<h3>Insert into DB via rest_api</h3>
+		<form method="post" action="./?news">
+			<input type="hidden" name="id" value="{{fdat.id}}">
+			<input type="hidden" name="limit" value="{{fdat.limit}}">
+			<input type="hidden" name="sort" value="{{fdat.sort}}">
+			<input type="hidden" name="offset" value="{{fdat.offset}}">
+			<input type="text" name="author" value="John Squibb">
+			<input type="submit" value="Show author">
+		</form>
 
 <h2>Rest API results:</h2>
 

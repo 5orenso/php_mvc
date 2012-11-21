@@ -36,7 +36,7 @@ class News_Controller {
 		$rest_api_url = $this->opt['rest_api']['proto'].'://'.
 						$this->opt['rest_api']['host'].':'.
 						$this->opt['rest_api']['port'].
-						'/api/article/get/'.$opt['id'].'?'.
+						'/api/article/load/'.$opt['id'].'?'.
 						'limit='.$opt['limit'].
 						'&offset='.$opt['offset'].
 						'&sort='.$opt['sort'];
@@ -72,10 +72,11 @@ class News_Controller {
 	
 		// assign article data to view
 		$view->assign(array(
-							'article' => $article,
-							'artlist' => $artlist,
-							'env'     => $env
-						   ));
+			'fdat'    => $opt,
+			'article' => $article,
+			'artlist' => $artlist,
+			'env'     => $env
+		));
 
 		//echo 'News_Controller->main();';
 		//$view->render();
