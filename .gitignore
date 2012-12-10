@@ -5,3 +5,4 @@ build.xml
 build-tools/
 lab/
 config/main.ini
+sync.sh
